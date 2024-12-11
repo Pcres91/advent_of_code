@@ -1,5 +1,7 @@
 mod common;
+mod advent;
 
 fn main() {
-    common::day1()
+    advent::day1::part_one::run();
+    advent::day1::part_two::run();
 }
