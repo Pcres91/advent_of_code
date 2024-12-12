@@ -1,6 +1,5 @@
-use crate::advent::day2::{read_input, RESULT_TEXT_PREFIX, judge_safety_for_all};
+use crate::advent::day2::*;
 
-#[allow(dead_code)]
 pub fn run() {
     let input = read_input();
 

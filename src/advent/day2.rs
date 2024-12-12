@@ -11,7 +11,7 @@ static RESULT_TEXT_PREFIX: &'static str = "Day Two";
 fn read_input() -> Vec<Vec<u32>> {
     let input_location = Path::new(INPUT_LOCATION);
 
-    let mut result: Vec<Vec<u32>> = Vec::new();
+    let mut input: Vec<Vec<u32>> = Vec::new();
     if let Ok(lines) = common::read_lines(input_location) {
         for line in lines.flatten() {
             let inputs: Vec<u32> = line
@@ -19,13 +19,13 @@ fn read_input() -> Vec<Vec<u32>> {
                 .map(|x| x.parse().expect("Not an integer!"))
                 .collect();
 
-            result.push(inputs);
+            input.push(inputs);
         }
     } else {
         panic!("Failed to open input file {input_location:?}");
     }
 
-    result
+    input
 }
 
 fn judge_safety_for_all(levels: &Vec<u32>) -> bool {
