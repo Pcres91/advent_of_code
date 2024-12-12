@@ -1,5 +1,6 @@
 use crate::advent::day1::{read_input, RESULT_TEXT_PREFIX};
 
+#[allow(dead_code)]
 pub fn run() {
     let (lhs, rhs) = read_input();
 
@@ -7,5 +8,5 @@ pub fn run() {
         acc + (val * rhs.iter().filter(|x| *x == val).count() as u32)
     });
 
-    println!("{RESULT_TEXT_PREFIX}: {part_2_result}");   
+    println!("{RESULT_TEXT_PREFIX} Part two: {part_2_result}");   
 }

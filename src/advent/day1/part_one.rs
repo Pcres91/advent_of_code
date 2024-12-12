@@ -1,5 +1,6 @@
 use crate::advent::day1::{read_input, RESULT_TEXT_PREFIX};
 
+#[allow(dead_code)]
 pub fn run() {
     let (lhs, rhs) = read_input();
 
