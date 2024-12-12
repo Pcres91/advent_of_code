@@ -10,8 +10,7 @@ pub fn run() {
 
         for idx in 0..levels.len() {
             // take away the indexed level from the levels
-            let mut levels_minus_one: Vec<u32> = levels.iter().take(idx).cloned().collect();
-            levels_minus_one.append(&mut levels.iter().skip(idx + 1).cloned().collect());
+            let levels_minus_one = [&levels[0..idx], &levels[idx + 1..]].concat();
 
             if judge_safety_for_all(&levels_minus_one) {
                 return true;
@@ -26,5 +25,5 @@ pub fn run() {
         .filter(|levels| judge_safety_allow_single_removal(levels))
         .count();
 
-    println!("{RESULT_TEXT_PREFIX} Part one: {num_safe}")
+    println!("{RESULT_TEXT_PREFIX} Part two: {num_safe}")
 }
