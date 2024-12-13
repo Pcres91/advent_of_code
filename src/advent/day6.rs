@@ -3,14 +3,16 @@ use std::path::Path;
 use crate::common;
 
 pub mod part_one;
-// pub mod part_two;
+pub mod part_two;
 
-static INPUT_LOCATION: &'static str = "input/6.txt";
-static RESULT_TEXT_PREFIX: &'static str = "Day Six";
+const INPUT_LOCATION: &str = "input/6.txt";
+const RESULT_TEXT_PREFIX: &str = "Day Six";
 
-static PATROLLED: u8 = b'X';
-static OBSTACLE: u8 = b'#';
-static STARTING_POSITION: char = '^';
+const PATROLLED: u8 = b'X';
+const UNPATROLLED: u8 = b'.';
+const OBSTACLE: u8 = b'#';
+const STARTING_POSITION: u8 = b'^';
+const STARTING_POSITION_CHAR: char = '^';
 
 fn read_input() -> (Vec<Vec<u8>>, Patroller) {
     let input_location = Path::new(INPUT_LOCATION);
@@ -22,7 +24,7 @@ fn read_input() -> (Vec<Vec<u8>>, Patroller) {
     if let Ok(lines) = common::read_lines(input_location) {
         for line in lines.flatten() {
             if !starting_position_found {
-                match line.find(STARTING_POSITION as char) {
+                match line.find(STARTING_POSITION_CHAR as char) {
                     Some(idx) => {
                         starting_position_found = true;
                         x_position = idx;
@@ -43,7 +45,7 @@ fn is_an_obstacle(map: &Vec<Vec<u8>>, position: &Position) -> bool {
     map[position.y][position.x] == OBSTACLE
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 enum Direction {
     Left,
     Right,
@@ -51,12 +53,13 @@ enum Direction {
     Down,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 struct Position {
     x: usize,
     y: usize,
 }
 
+#[derive(Clone, Debug)]
 struct Patroller {
     current_position: Position,
     current_direction: Direction,
@@ -73,7 +76,7 @@ impl Patroller {
         }
     }
 
-    fn swivel(&mut self) {
+    pub fn swivel(&mut self) {
         match self.current_direction {
             Direction::Down => self.current_direction = Direction::Left,
             Direction::Left => self.current_direction = Direction::Up,
@@ -82,7 +85,8 @@ impl Patroller {
         }
     }
 
-    fn get_next_position(&self, map: &Vec<Vec<u8>>) -> Option<Position> {
+    // only returns None if off the map. Otherwise returns one forward in the direction pointed.
+    fn get_next_position_forward(&self, map: &Vec<Vec<u8>>) -> Option<Position> {
         match self.current_direction {
             Direction::Down => match self.current_position.y == map.len() - 1 {
                 true => None,
@@ -119,7 +123,7 @@ impl Patroller {
         let mut attempts = 0;
 
         while attempts < 4 {
-            match self.get_next_position(map) {
+            match self.get_next_position_forward(map) {
                 None => return false,
                 Some(next_pos) => match is_an_obstacle(map, &next_pos) {
                     true => {

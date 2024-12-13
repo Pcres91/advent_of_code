@@ -5,8 +5,8 @@ use std::path::Path;
 pub mod part_one;
 pub mod part_two;
 
-static INPUT_LOCATION: &'static str = "input/3.txt";
-static RESULT_TEXT_PREFIX: &'static str = "Day Three";
+const INPUT_LOCATION: &str = "input/3.txt";
+const RESULT_TEXT_PREFIX: &str = "Day Three";
 
 // can't be arsed to figure out a streaming solution
 fn read_input() -> String {

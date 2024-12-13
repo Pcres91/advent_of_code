@@ -14,5 +14,6 @@ fn main() {
     // advent::day4::part_two::run();
     // advent::day5::part_one::run();
     // advent::day5::part_two::run();
-    advent::day6::part_one::run();
+    // advent::day6::part_one::run();
+    advent::day6::part_two::run();
 }

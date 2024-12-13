@@ -5,8 +5,8 @@ use crate::common;
 pub mod part_one;
 pub mod part_two;
 
-static INPUT_LOCATION: &'static str = "input/1.txt";
-static RESULT_TEXT_PREFIX: &'static str = "Day One";
+const INPUT_LOCATION: &str = "input/1.txt";
+const RESULT_TEXT_PREFIX: &str = "Day One";
 
 fn read_input() -> (Vec<u32>, Vec<u32>) {
     let input_location = Path::new(INPUT_LOCATION);
