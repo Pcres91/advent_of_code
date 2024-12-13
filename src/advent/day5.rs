@@ -5,7 +5,7 @@ use std::{
 };
 
 pub mod part_one;
-// pub mod part_two;
+pub mod part_two;
 
 static INPUT_LOCATION: &'static str = "input/5.txt";
 static RESULT_TEXT_PREFIX: &'static str = "Day Five";
@@ -42,12 +42,30 @@ impl Rules {
         if pages_after.len() == 0 {
             return true;
         }
+
         if let Some(rule_pages_after) = self.data.get(&page) {
-            !pages_after
+            let valid = !pages_after
                 .iter()
-                .any(|page| !rule_pages_after.contains(page))
+                .any(|page| !rule_pages_after.contains(page));
+
+            valid
         } else {
             false
+        }
+    }
+
+    pub fn find_first_invalid_page(&self, page: u32, pages_after: &[u32]) -> Option<usize> {
+        if let Some(rule_pages_after) = self.data.get(&page) {
+            for (idx, page_after_to_check) in pages_after.iter().enumerate() {
+                if !rule_pages_after.contains(page_after_to_check) {
+                    return Some(idx);
+                }
+            }
+
+            panic!("huh?");
+        } else {
+            // when no pages can be after this one
+            None
         }
     }
 }
@@ -100,4 +118,51 @@ fn is_valid_update(update: &Vec<u32>, rules: &Rules) -> bool {
 fn get_middle_number(rules: &[u32]) -> u32 {
     let middle_idx = rules.len() / 2;
     rules[middle_idx]
+}
+
+fn reorder_invalid_update(update: &[u32], rules: &Rules) -> Vec<u32> {
+    fn flip_values(vec: &mut [u32], lhs_idx: usize, rhs_idx: usize) {
+        let old = vec[lhs_idx];
+        vec[lhs_idx] = vec[rhs_idx];
+        vec[rhs_idx] = old;
+    }
+
+    let mut reordered: Vec<u32> = update.into();
+
+    let mut attempts = 0;
+
+    while !is_valid_update(&reordered, rules) {
+        attempts += 1;
+        let max_reordering_tries = 13; // max reorderings required was found to be 12 :)
+        if attempts == max_reordering_tries {
+            panic!("failing after {max_reordering_tries} attempts.\nOriginal:  {update:?}\nReordered: {reordered:?}");
+        }
+
+        for page_idx in 0..reordered.len() {
+            let page = reordered[page_idx];
+            let pages_after = &reordered[page_idx + 1..];
+
+            if !rules.pages_after_are_valid(page, pages_after) {
+                let first_incorrect_page_idx_in_pages_after =
+                    rules.find_first_invalid_page(page, pages_after);
+
+                match first_incorrect_page_idx_in_pages_after {
+                    Some(idx) => {
+                        let first_incorrect_page_idx = idx + page_idx + 1;
+
+                        // flip the two pages that are in the wrong order
+                        flip_values(&mut reordered, page_idx, first_incorrect_page_idx);
+                    }
+                    None => {
+                        // no page can be after this one, so send to the back.
+                        // For now, just flipping with the last value. Might need to change?
+                        let last_idx = reordered.len() - 1;
+                        flip_values(&mut reordered, page_idx, last_idx);
+                    }
+                };
+            }
+        }
+    }
+
+    reordered.into()
 }
